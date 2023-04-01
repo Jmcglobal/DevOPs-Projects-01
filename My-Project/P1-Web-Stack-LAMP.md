@@ -167,7 +167,8 @@ After saving and closing the file, i will reload Apache2
    - phpinfor();
 Then save and exit, then text again be using the virtual machine public IP address.
 ![php-working](https://user-images.githubusercontent.com/101070055/229322430-c3479783-9a73-4e0c-8505-75a540da1410.png)
+
 yeah !!! its working.......
 
->>>>>>>>>>>>>>>>>>> JMCGLOBAL-TECH>>>>>>>>>>>>>>>>>>>>>>>>>>
+      >>>>>>>>>>>>>>>>>>> JMCGLOBAL-TECH>>>>>>>>>>>>>>>>>>>>>>>>>>
 
