@@ -119,15 +119,18 @@ To test mytup with a PHP script, it’s best to set up a proper Apache Virtual H
   
  - ~$ vi /etc/apache2/sites-available/jmcglobal.conf
  I have created a new blank file jmcglobal.conf, then i will configure my virtual host to host jmcglobal website contents
-  <virtualHost *:80>
-    ServerName jmcglobal
-    ServerAlias www.jmcglobal-tech.net
-    ServerAdmin webmaster@localhost
-    DocumentRoot /var/www/jmcglobal-website
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog ${APACHE_LOG_DIR}/access.log
-  </virtualHost>
- ![vi-editor-virtual-hots](https://user-images.githubusercontent.com/101070055/229318417-c06d2b35-d5a2-4139-a5ba-90c44678e966.png)
+  
+*  <virtualHost *:80>
+*    ServerName jmcglobal
+*    ServerAlias www.jmcglobal-tech.net
+*    ServerAdmin webmaster@localhost
+*    DocumentRoot /var/www/jmcglobal-website
+*    ErrorLog ${APACHE_LOG_DIR}/error.log
+*    CustomLog ${APACHE_LOG_DIR}/access.log
+*  </virtualHost>
+  
+![vi-editor-virtual-hots](https://user-images.githubusercontent.com/101070055/229383840-461ab8eb-c353-49f0-b78c-96927f3d2770.png)
+
  
   Then i will save the file by hitting esc button, then type : and input wq then ENTER to save and exit.
  - ~$ ls /etc/apache2/sites-available > to view the list of files inside sites-available apache directory.
