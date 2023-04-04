@@ -72,3 +72,79 @@ I will test if am able to log in to the MYSQL console:
 
 - sudo mysql -p > -p flag will prompt for the password used after changing the root user password
 Now MYSQL server is now installed and secured.
+
+## PHP INSTALLATION
+PHP is a powerfull language, It is a great choice for creating dynamic web pages and applications.
+ Nginx requires an external program to handle PHP processing and act as a bridge between the PHP interpreter itself and the web server. This allows for a better overall performance in most PHP-based websites, but it requires additional configuration. I’ll need to install php-fpm, which stands for “PHP fastCGI process manager”, and tell Nginx to pass PHP requests to this software for processing. Additionally, I’ll need php-mysql, a PHP module that allows PHP to communicate with MySQL-based databases.
+ 
+ - sudo apt install php-fpm php-mysql
+
+I now have PHP components and its dependencies installed.
+
+## Configuring Nginx to use PHP processor
+I will create a server blocks (similar to virtual host in Apache) to encapsulate configuration details and host more than one website domain in this single server.
+By default Nginx has one server block configured and enabled bu default, and configured to serve web content from '/var/www/html', i will leave this directory and create another directory on the same root directory '/var/www/jmcglobal-websites.
+
+#Creating another directory to serve website content.
+- sudo mkdir /var/www/jmcglobal-websites
+
+I will change the ownership from root to user.
+- ~$ sudo chown $user:$USER /var/www/jmcglobal-websites
+
+![change-permission](https://user-images.githubusercontent.com/101070055/229642043-ad006519-c85b-4c8d-98a3-6de5781e01cb.png)
+
+I will create a new configuration file in Nginx sites-available directory, I will use nano text editor
+
+- ~$ sudo nano /etc/nginx/sistes-available/jmcglobal-websites
+
+here is the configuration.
+
+![nginx-config](https://user-images.githubusercontent.com/101070055/229642774-61e7c7fe-df43-4e99-88e9-11d7ebd676ec.png)
+
+
+Here’s what each of these directives and location blocks do:
+
+listen — Defines what port Nginx will listen on. In this case, it will listen on port 80, the default port for HTTP.
+
+root — Defines the document root where the files served by this website are stored.
+
+index — Defines in which order Nginx will prioritize index files for this website. It is a common practice to list index.html files with a higher precedence than index.php files to allow for quickly setting up a maintenance landing page in PHP applications. You can adjust these settings to better suit your application needs.
+
+server_name — Defines which domain names and/or IP addresses this server block should respond for. Point this directive to your server’s domain name or public IP address.
+
+location / — The first location block includes a try_files directive, which checks for the existence of files or directories matching a URI request. If Nginx cannot find the appropriate resource, it will return a 404 error.
+
+location ~ .php$ — This location block handles the actual PHP processing by pointing Nginx to the fastcgi-php.conf configuration file and the php7.4-fpm.sock file, which declares what socket is associated with php-fpm.
+
+location ~ /.ht — The last location block deals with .htaccess files, which Nginx does not process. By adding the deny all directive, if any .htaccess files happen to find their way into the document root ,they will not be served to visitors.
+
+Activate Configuration by linking to the config file from Nginx sites-available directory:
+- ~$ sudo ln -s /etc/nginx/sites-available/jmcglobal-websites /etc/nginx/sites-enabled
+
+To test my configuration for syntax errors.
+- ~$ sudo nginx -t
+
+output:
+
+![nginx-config-test](https://user-images.githubusercontent.com/101070055/229644402-a9cc022b-5323-4236-98c2-d3e4dfa41079.png)
+
+I also need to disable default Nginx host that is currently configured to listen on port 80.
+
+- ~$ sudo unlink /etc/nginx/sites-enabled/default
+
+To reload Nginx server.
+
+- ~$ sudo systemctl reload nginx
+
+My new website is now active, but the web root /var/www/jmcglobal-websites is still empty. I Create an index.html file in that location so that I can test that the new server block works as expected:
+
+sudo echo 'Hello LEMP from hostname' $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) 'with public IP'
+$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) > /var/www/projectLEMP/index.html
+
+i can now use web browser along with my instance public IP to access this server.
+
+To access it locally,
+
+curl http://localhost
+
+Now my nginx server configuration is successful.
