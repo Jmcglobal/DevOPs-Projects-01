@@ -40,17 +40,20 @@ These four technologies are used together to create modern web applications. Mon
     - curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 
 - install Node.js .
+    
     - sudo apt-get install nodejs -y .
 
 - The command will install nodejs and npm,"npm is a package manager for Node like apt for Ubuntu, it is used to install node Modules & packages and manage dependency conflicts.
 
 - Confirm Node installation
-    - node -v
+   
+   - node -v
     - npm -v
 
 ![node-version](https://user-images.githubusercontent.com/101070055/231740030-9a0bc623-64d8-4ea2-9a24-be1b278768cc.png)
 
 - Make a directory for the project  .
+    
     - mkdir Mern-Stack
     - cd Mern-Stack
     - ls -alh
@@ -58,8 +61,10 @@ These four technologies are used together to create modern web applications. Mon
 ![project-directory](https://user-images.githubusercontent.com/101070055/231746041-d4650f57-6ccb-465c-a219-8eece8fb3f52.png)
 
 - Run npm command to initialise the project, hit enter to accept default values to the end.
-    - npm init .
+   
+   - npm init .
 - ls command to confirm package.json have initialise .
+    
     - ls
 
 ![npm-init](https://user-images.githubusercontent.com/101070055/231747075-65bafe91-64d2-44a4-b1a0-eb33dbcad500.png)
@@ -69,43 +74,170 @@ These four technologies are used together to create modern web applications. Mon
     - npm install express
     
 - create index.js file .
+     
      - touch index.js
 
-- Install dotenv module
+- Install dotenv module.
+    
     - npm install dotenv
 
-- Edit index.js with vim editor .
-    - smaple dummy commands
-    
-    const express = require('express');
-    require('dotenv').config();
+- Edit index.js with vim editor . - sample dummy commands
 
-    const app = express();
+            const express = require('express');
+            require('dotenv').config();
 
-    const port = process.env.PORT || 5000;
+            const app = express();
 
-    app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "\*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-    });
+            const port = process.env.PORT || 5000;
 
-    app.use((req, res, next) => {
-    res.send('Welcome to Express');
-    });
+            app.use((req, res, next) => {
+            res.header("Access-Control-Allow-Origin", "\*");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            next();
+            });
 
-    app.listen(port, () => {
-    console.log(`Server running on port ${port}`)
-    });
+            app.use((req, res, next) => {
+            res.send('Welcome to Express');
+            });
+
+            app.listen(port, () => {
+            console.log(`Server running on port ${port}`)
+            });
 
 NOTE:
   i specified to use port 5000 in the code, so that the application will reachable
   I have also open the port 5000 on the security group attached to the ubuntu machine.
 - save and exit
+   
    - :wq
 
 - Start the server
+    
     -  node index.js
     
 ![running-server](https://user-images.githubusercontent.com/101070055/231762821-498eb96a-d5c9-4390-9559-dda1715af29c.png)
 
+- To access the app via browser
+        
+        - https://ubuntu-machine-public-ip:5000
+        
+- terminal command to display Machine DNS & Public IP .
+        
+        - curl -s  http://169.254.169.254/latest/meta-data/public-ipv4 
+        - curl -s http://169.254.169.254/latest/meta-data/public-hostname 
+
+NOTE: Ensure port 5000 is allow on the security group inbound rule entry attached to the ubuntu machine.
+
+# Routes
+There are three actions that the  application needs to be able to do:
+        
+        Create a new task
+        Display list of all tasks
+        Delete a completed task
+        
+Each task will be associated with some particular endpoint and will use different standard HTTP request methods: POST, GET, DELETE.
+For each task, i need to create routes that will define various endpoints that the  app will depend on.
+
+- create routes directory and change directory inside routes directory
+       
+       - mkdir routes && cd routes
+
+- Create app.js file inside the routes directory and use vim editor to edit the file
+       
+       - touch app.js
+       - vim app.js
+       
+- Paste the sample code inside the file.
+            const express = require ('express');
+            const router = express.Router();
+
+            router.get('/todos', (req, res, next) => {
+
+            });
+
+            router.post('/todos', (req, res, next) => {
+
+            });
+
+            router.delete('/todos/:id', (req, res, next) => {
+
+            })
+
+            module.exports = router;
+
+# Create Models
+What is Models ?
+A model is at the heart of JavaScript based applications, and it is what makes it interactive.
+  
+Using a model in MERN stack development gives developers the ability to quickly and easily create complex data structures and retrieve data from a database. Models also provide a layer of abstraction between the view layer and the data layer, making it easier to manage the data and maintain the code. Models also provide a way to ensure that data is consistent across multiple sources and that it is stored and retrieved securely. Finally, models allow developers to easily create relationships between data entities and perform complex queries on the data.
+
+        - To create a Schema and a model, install mongoose which is a Node.js package that makes working with mongodb easier.
+- Install mongoose .
+
+        - npm install mongoose
+
+- Create model folder and change directory into the model folder.
+        
+        - mkdir models && cd models
+
+- Create a file js file inside the models.
+       
+       - touch todo.js
+
+- use vim editor to open todo.js.
+        
+        - vim todo.js
+
+- Enter this smaple dummy code 
+           
+           const mongoose = require('mongoose');
+            const Schema = mongoose.Schema;
+
+            //create schema for todo
+            const TodoSchema = new Schema({
+            action: {
+            type: String,
+            required: [true, 'The todo text field is required']
+            }
+            })
+
+            //create model for todo
+            const Todo = mongoose.model('todo', TodoSchema);
+
+            module.exports = Todo;
+
+Now i need to update my routes from the file api.js in ‘routes’ directory to make use of the new model.
+
+- Change directory to routes and use vim editor to open app.js, then enter sample  dummy code
+       
+       const express = require ('express');
+        const router = express.Router();
+        const Todo = require('../models/todo');
+
+        router.get('/todos', (req, res, next) => {
+
+        //this will return all the data, exposing only the id and action field to the client
+        Todo.find({}, 'action')
+        .then(data => res.json(data))
+        .catch(next)
+        });
+
+        router.post('/todos', (req, res, next) => {
+        if(req.body.action){
+        Todo.create(req.body)
+        .then(data => res.json(data))
+        .catch(next)
+        }else {
+        res.json({
+        error: "The input field is empty"
+        })
+        }
+        });
+
+        router.delete('/todos/:id', (req, res, next) => {
+        Todo.findOneAndDelete({"_id": req.params.id})
+        .then(data => res.json(data))
+        .catch(next)
+        })
+
+        module.exports = router;
