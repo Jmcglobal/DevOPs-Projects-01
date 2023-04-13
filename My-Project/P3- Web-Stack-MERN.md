@@ -241,3 +241,111 @@ Now i need to update my routes from the file api.js in ‘routes’ directory to
         })
 
         module.exports = router;
+        
+ 
+ 
+
+# MONGODB CONNECTION.
+
+I need a database where i will store  data. For this i will make use of Mongodb Atlas. mongodb Atlas provides MongoDB database as a service solution, so to make life easy, i will need to sign up for a shared clusters free account, which is ideal for my use case.
+You can sign up by clicking https://www.mongodb.com/atlas-signup-from-mlab .
+
+- After signing up, login in with your email and pasword ..
+- click database, click Build Database
+
+![build-db](https://user-images.githubusercontent.com/101070055/231814323-e0e03d94-9d6b-4848-bf6d-e4ea3c30f75e.png)
+
+- Select M0 which is free tier, select AWS as provider and select closest region, then click create.
+
+![m0-free](https://user-images.githubusercontent.com/101070055/231814823-b8159d80-73d5-4cb5-a3b9-41be637ba85c.png)
+
+- click on (Database Access) , then click on add new database user.
+
+![db-user](https://user-images.githubusercontent.com/101070055/231817433-585e6764-6c0d-41c7-b313-c877785c5ad8.png)
+
+- click on network access to add IP entry that will acess the database
+
+![network-access](https://user-images.githubusercontent.com/101070055/231818419-3ccbee91-93b5-44d8-a0c4-ea2f505f4bbf.png)
+
+- select Allow Access From Anywhere, then click confirm 
+
+![anywhere](https://user-images.githubusercontent.com/101070055/231819187-e287f1de-ed61-40cd-a904-28fb559e3e74.png)
+
+In the index.js file, i specified process.env to access environment variables, but i have not yet created this file. So i need to do that now.
+
+Create a file in your mern-stack directory and name it .env and use vi to edit the file
+
+        touch .env
+        vi .env
+        
+Add Connection Stringe to access the database
+
+        DB = 'mongodb+srv://<username>:<password>@cluster0.mqxyjjj.mongodb.net/?retryWrites=true&w=majority'
+
+Use esc to exit text input, type :wq to save and exit.
+
+- Where to see database connection stringe
+
+        click on Database
+        click on connect 
+        
+   ![click-db](https://user-images.githubusercontent.com/101070055/231826434-4487ca18-628a-46af-997a-44a578ffffa2.png)
+     
+        Click on Drivers, Under connect to your application
+       
+   ![connect](https://user-images.githubusercontent.com/101070055/231826808-1cdbcf43-74a9-4861-bd2c-d024921bc7df.png)
+
+        scroll down and copy the connection URL
+        
+   Now i need to update the index.js to reflect the use of .env so that Node.js can connect to the database.
+   
+   - Use vim editor to edit index.js, delete entire codes and use below dummy code
+   
+        const express = require('express');
+        const bodyParser = require('body-parser');
+        const mongoose = require('mongoose');
+        const routes = require('./routes/api');
+        const path = require('path');
+        require('dotenv').config();
+
+        const app = express();
+
+        const port = process.env.PORT || 5000;
+
+        //connect to the database
+        mongoose.connect(process.env.DB, { useNewUrlParser: true, useUnifiedTopology: true })
+        .then(() => console.log(`Database connected successfully`))
+        .catch(err => console.log(err));
+
+        //since mongoose promise is depreciated, we overide it with node's promise
+        mongoose.Promise = global.Promise;
+
+        app.use((req, res, next) => {
+        res.header("Access-Control-Allow-Origin", "\*");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        next();
+        });
+
+        app.use(bodyParser.json());
+
+        app.use('/api', routes);
+
+        app.use((err, req, res, next) => {
+        console.log(err);
+        next();
+        });
+
+        app.listen(port, () => {
+        console.log(`Server running on port ${port}`)
+        });
+        
+        
+Using environment variables to store information is considered more secure and best practice to separate configuration and secret data from the application, instead of writing connection strings directly inside the index.js application file.
+
+- Start The Server again
+        node index.js
+        
+If successfull .....
+
+![db-running](https://user-images.githubusercontent.com/101070055/231835865-07ffed53-ed51-4c36-94df-f1aee9c88ffe.png)
+
