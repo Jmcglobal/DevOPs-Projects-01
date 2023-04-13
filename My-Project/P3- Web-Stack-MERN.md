@@ -301,44 +301,44 @@ Use esc to exit text input, type :wq to save and exit.
    
    - Use vim editor to edit index.js, delete entire codes and use below dummy code
    
-        const express = require('express');
-        const bodyParser = require('body-parser');
-        const mongoose = require('mongoose');
-        const routes = require('./routes/api');
-        const path = require('path');
-        require('dotenv').config();
+                const express = require('express');
+                const bodyParser = require('body-parser');
+                const mongoose = require('mongoose');
+                const routes = require('./routes/api');
+                const path = require('path');
+                require('dotenv').config();
 
-        const app = express();
+                const app = express();
 
-        const port = process.env.PORT || 5000;
+                const port = process.env.PORT || 5000;
 
-        //connect to the database
-        mongoose.connect(process.env.DB, { useNewUrlParser: true, useUnifiedTopology: true })
-        .then(() => console.log(`Database connected successfully`))
-        .catch(err => console.log(err));
+                //connect to the database
+                mongoose.connect(process.env.DB, { useNewUrlParser: true, useUnifiedTopology: true })
+                .then(() => console.log(`Database connected successfully`))
+                .catch(err => console.log(err));
 
-        //since mongoose promise is depreciated, we overide it with node's promise
-        mongoose.Promise = global.Promise;
+                //since mongoose promise is depreciated, we overide it with node's promise
+                mongoose.Promise = global.Promise;
 
-        app.use((req, res, next) => {
-        res.header("Access-Control-Allow-Origin", "\*");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        next();
-        });
+                app.use((req, res, next) => {
+                res.header("Access-Control-Allow-Origin", "\*");
+                res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                next();
+                });
 
-        app.use(bodyParser.json());
+                app.use(bodyParser.json());
 
-        app.use('/api', routes);
+                app.use('/api', routes);
 
-        app.use((err, req, res, next) => {
-        console.log(err);
-        next();
-        });
+                app.use((err, req, res, next) => {
+                console.log(err);
+                next();
+                });
 
-        app.listen(port, () => {
-        console.log(`Server running on port ${port}`)
-        });
-        
+                app.listen(port, () => {
+                console.log(`Server running on port ${port}`)
+                });
+
         
 Using environment variables to store information is considered more secure and best practice to separate configuration and secret data from the application, instead of writing connection strings directly inside the index.js application file.
 
@@ -349,3 +349,146 @@ If successfull .....
 
 ![db-running](https://user-images.githubusercontent.com/101070055/231835865-07ffed53-ed51-4c36-94df-f1aee9c88ffe.png)
 
+Testing Backend Code without Frontend using RESTful API, backend part of the application have been written, and configured a database, but no frontend UI yet. Therefore i will use a POSTMAN API software the backend.
+
+        Post Request 
+        Get request
+
+Create a GET request to your API on http://:5000/api/todos. This request retrieves all existing records from out To-do application (backend requests these records from the database and sends it us back as a response to GET request).
+
+Set Headers as follows
+
+![header-api](https://user-images.githubusercontent.com/101070055/231883688-22187176-c479-4bbe-aab2-1cfe74eff840.png)
+
+
+![post-api](https://user-images.githubusercontent.com/101070055/231880053-ca582ad0-1735-448f-9b37-aa7f8201792c.png)
+
+
+![get-api](https://user-images.githubusercontent.com/101070055/231881309-a696fa98-1312-475e-acad-f48ffdf428a6.png)
+
+Database .
+
+![db-items](https://user-images.githubusercontent.com/101070055/231882753-bf3e149c-465f-48a2-b213-14a1a81c9acc.png)
+
+
+
+# CREATE FRONTEND
+
+I have don the functionality i want from the backend and API, now it is time to create a user interface for a web client to interact with the application via API, i will use the create-react-app command ..
+
+- Run React command
+
+            npx create-react-app client
+
+This will create a new folder in project directory called client, where i will add all the react code.
+
+Running a React App Before testing the react app, there are some dependencies that need to be installed.
+
+- Install concurrently. It is used to run more than one command simultaneously from the same terminal window
+
+            npm install concurrently --save-dev
+
+- Install nodemon. It is used to run and monitor the server. If there is any change in the server code, nodemon will restart it       automatically and load the new changes.
+
+            npm install nodemon --save-dev
+
+- Edit package.json file on project director, add below entry on the  scripts...
+
+            "scripts": {
+            "start": "node index.js",
+            "start-watch": "nodemon index.js",
+            "dev": "concurrently \"npm run start-watch\" \"cd client && npm start\""
+            },
+
+![pkg json](https://user-images.githubusercontent.com/101070055/231892257-53c71e15-c23e-45bf-84bc-2bd92bba9ceb.png)
+
+- Start the app on project directory with command:
+            npm run dev
+
+My app will open and start running on port 3000
+To ensure the app is reachable, i edited the security , added another allow rule entry for port 3000.
+
+![app-run](https://user-images.githubusercontent.com/101070055/231894723-23a6d18d-8f65-4521-a713-9b074416982d.png)
+
+To access the app on my browser
+
+            http://localhost:3000
+ 
+![reacr-run](https://user-images.githubusercontent.com/101070055/231894958-01dc6a9e-0c25-4a1a-b9ce-2460fb52d55f.png)
+
+The react app is up and running
+
+Creating React Components One of the advantages of react is that it makes use of components, which are reusable and also makes code modular. For my app, there will be two stateful components and one stateless component. From my project directory run.
+
+            cd client
+
+Change to src directory
+
+            cd src
+
+Create new directory called components inside src dir 
+
+            mkdir components
+
+Move into the components directory
+
+            cd components
+
+Create three files inside the components directory, Input.js, ListTodo.js, and Todo.js
+
+            touch Input.js ListTodo.js Todo.js
+
+use vim editor open Input.js file
+
+            vim Input.js
+
+Enter the sample dummy code 
+
+            import React, { Component } from 'react';
+            import axios from 'axios';
+
+            class Input extends Component {
+
+            state = {
+            action: ""
+            }
+
+            addTodo = () => {
+            const task = {action: this.state.action}
+
+                if(task.action && task.action.length > 0){
+                  axios.post('/api/todos', task)
+                    .then(res => {
+                      if(res.data){
+                        this.props.getTodos();
+                        this.setState({action: ""})
+                      }
+                    })
+                    .catch(err => console.log(err))
+                }else {
+                  console.log('input field required')
+                }
+
+            }
+
+            handleChange = (e) => {
+            this.setState({
+            action: e.target.value
+            })
+            }
+
+            render() {
+            let { action } = this.state;
+            return (
+            <div>
+            <input type="text" onChange={this.handleChange} value={action} />
+            <button onClick={this.addTodo}>add todo</button>
+            </div>
+            )
+            }
+            }
+
+            export default Input
+
+
+To make use of Axios, which is a Promise based HTTP client for the browser and node.js, you need to cd into your client from your terminal and run yarn add axios or npm install axios.
