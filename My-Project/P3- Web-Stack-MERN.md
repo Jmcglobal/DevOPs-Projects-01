@@ -20,3 +20,92 @@ These four technologies are used together to create modern web applications. Mon
 ## I will implement a solution base of MERN stack in AWS Cloud.
 ![mern-03](https://user-images.githubusercontent.com/101070055/231607825-d65e7cf6-c91c-4e1d-acd0-c0ef2b7cfb78.png)
 
+![ubuntu-machine](https://user-images.githubusercontent.com/101070055/231736726-2d0d2bc1-4a0d-4180-81b8-e01f6cc3cf8e.png)
+
+
+- I am using AWS EC2 ubuntu instance for this project.
+    - 2 vCPU and 2G memery
+    - key pair
+    - security group
+    - 30 Gib volume
+    - AZ us-east-1a
+
+# Backend Configuration.
+
+- Update and Upgrade Ubuntu Machine.
+     - sudo apt update -y .
+     - sudo apt upgrade -y .
+
+- Get the location of Node.js software from Ubuntu repositories.
+    - curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+
+- install Node.js .
+    - sudo apt-get install nodejs -y .
+
+- The command will install nodejs and npm,"npm is a package manager for Node like apt for Ubuntu, it is used to install node Modules & packages and manage dependency conflicts.
+
+- Confirm Node installation
+    - node -v
+    - npm -v
+
+![node-version](https://user-images.githubusercontent.com/101070055/231740030-9a0bc623-64d8-4ea2-9a24-be1b278768cc.png)
+
+- Make a directory for the project  .
+    - mkdir Mern-Stack
+    - cd Mern-Stack
+    - ls -alh
+
+![project-directory](https://user-images.githubusercontent.com/101070055/231746041-d4650f57-6ccb-465c-a219-8eece8fb3f52.png)
+
+- Run npm command to initialise the project, hit enter to accept default values to the end.
+    - npm init .
+- ls command to confirm package.json have initialise .
+    - ls
+
+![npm-init](https://user-images.githubusercontent.com/101070055/231747075-65bafe91-64d2-44a4-b1a0-eb33dbcad500.png)
+
+# Install Expressjs .
+
+    - npm install express
+    
+- create index.js file .
+     - touch index.js
+
+- Install dotenv module
+    - npm install dotenv
+
+- Edit index.js with vim editor .
+    - smaple dummy commands
+    
+    const express = require('express');
+    require('dotenv').config();
+
+    const app = express();
+
+    const port = process.env.PORT || 5000;
+
+    app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "\*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+    });
+
+    app.use((req, res, next) => {
+    res.send('Welcome to Express');
+    });
+
+    app.listen(port, () => {
+    console.log(`Server running on port ${port}`)
+    });
+
+NOTE:
+  i specified to use port 5000 in the code, so that the application will reachable
+  I have also open the port 5000 on the security group attached to the ubuntu machine.
+- save and exit
+   - :wq
+
+- Start the server
+    -  node index.js
+    
+![running-server](https://user-images.githubusercontent.com/101070055/231762821-498eb96a-d5c9-4390-9559-dda1715af29c.png)
+
