@@ -29,7 +29,7 @@ This diagram is real scenerio operation of almost 99% of web applications, Mern 
 
 Here i will launch 2 AWS Ubuntu Instance
 
-- Instance A: Mysql Server
+- Instance A: Mysql Client
 - Instance B: Mysql Server
 
 On mysql client Linux Server install MySQL Client software.
@@ -40,7 +40,9 @@ By default, both of my EC2 virtual servers are located in the same local virtual
 
 ![ec2-servers](https://user-images.githubusercontent.com/101070055/232151014-3aac88ae-b66d-4ebf-a804-ae17923504fc.png)
 
-SSh into Mysql Server to configure allow connections from remote hosts
+Mysql Server is running on private IP and i can connect to it from anywhere, private IP using Client-machine, and anywhere using MYSQL server public IP
+
+SSh into Mysql Server to configure allow connections from remote hosts any IP address
 
         sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
         
@@ -69,8 +71,32 @@ Grant all database privileges to the user
 Reload privileges from the grant tables in the mysql database.
 
         FLUSH PRIVILEGES;
-        
+
+To delete user
+
+         DROP USER 'user'@'%';
+
  ![table-ok](https://user-images.githubusercontent.com/101070055/232166356-8a7d2c03-afde-429f-8a25-6fa1fbfdbb05.png)
 
-Reference Command to Create table, List table, insert items, delete items, delete table, create database, delete database.
+Configure Mysql Client, install Mysql client software
+
+         sudo apt install mysql-client
+
+Connect to Mysql database Server
+
+         sudo -h <mysql-server-public/privateIP> -u <username> -p 
+         
+It will prompt for password, then enter password
+
+![client-db](https://user-images.githubusercontent.com/101070055/232171805-68275c2b-b21e-41c5-8707-cb90a97c314a.png)
+
+I can as well access it using my local machine
+
+![db-client](https://user-images.githubusercontent.com/101070055/232172001-f99c849d-2118-4e64-97a2-0465ab5297d2.png)
+
+......................
+
+Am available via emial for any enquiry ..
+
+Mmadubugwuchibuife@gmail.com  
 
