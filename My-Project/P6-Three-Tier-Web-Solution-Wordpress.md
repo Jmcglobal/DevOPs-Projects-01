@@ -227,6 +227,8 @@ Here Confirmed my configuration
 
     sudo apt update -y 
     sudo apt -y install wget apache2 php php-mysqlnd php-fpm php-json
+    or.
+    sudo apt install php php-mysql php-gd php-cli php-common -y
 
 Start Apache2
 
@@ -235,15 +237,16 @@ Start Apache2
 
 Install PHP and its dependencies
 
-     sudo yum install php php-opcache php-gd php-curl php-mysqlnd
+     sudo apt install php php-opcache php-gd php-curl php-mysqlnd
 
 Download wordpress and copy wordpress to var/www/html
 
-      mkdir wordpress
-      cd   wordpress
       sudo wget http://wordpress.org/latest.tar.gz
       sudo tar xzvf latest.tar.gz
       sudo rm -rf latest.tar.gz
-      cp wordpress/wp-config-sample.php wordpress/wp-config.php
-      cp -R wordpress /var/www/html/
+      sudo cp -R wordpress/* /var/www/html/
+      sudo chown -R www-data:www-data /var/www/html
+      
+# Configure Database:
 
+I will repeat same volume configuration and mount it on mysql default data directory /var/lib/mysql
