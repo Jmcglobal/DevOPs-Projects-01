@@ -220,7 +220,8 @@ Reload and test configuration
 
 Here Confirmed my configuration
 
-![fstab](https://user-images.githubusercontent.com/101070055/232242548-567ad540-a432-4f6b-8b19-149b7fa56dd0.png)
+![test-volume](https://user-images.githubusercontent.com/101070055/232251297-e4a1af84-add5-4c93-91b4-b7550dffd40d.png)
+
 
 # Update Server, Install Apache2 Server and its dependencies and Wordpress
 
