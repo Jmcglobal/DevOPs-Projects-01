@@ -178,3 +178,71 @@ Restore log files on /home/backup/logs to /var/log with rsync utility
       sudo rsync -av /home/backup/logs/. /var/log/
 
 Update /etc/fstab file so that the mount configuration will persist after restart of the server. 
+
+# Update The /etc/fstab file
+
+The UUID of the device will be used to update the /etc/fstab file
+
+View the UUID 
+
+     sudo blkid
+
+OUTPUT:
+
+   /dev/xvda1: LABEL="cloudimg-rootfs" UUID="cda0c0a7-e64a-4413-85a5-a0235f6f567f" BLOCK_SIZE="4096" TYPE="ext4"               PARTUUID="b2e4a171-bfec-43f0-928d-f8fe44362f17"
+   /dev/xvda15: LABEL_FATBOOT="UEFI" LABEL="UEFI" UUID="54D6-C8B8" BLOCK_SIZE="512" TYPE="vfat" PARTUUID="abfe16f0-dfd7-      479d-93a7-67821caab591"
+   /dev/loop1: TYPE="squashfs"
+   /dev/mapper/app--data-apps--log: UUID="679ee46f-f2f1-474e-86c4-14fa6baaa0a3" BLOCK_SIZE="4096" TYPE="ext4"
+   /dev/xvdh1: UUID="SzbTBc-2Bcd-BXhw-NUOA-nGw7-RBeM-0WLhck" TYPE="LVM2_member" PARTLABEL="Linux filesystem"                   PARTUUID="a4d5b06e-c1b3-4ffa-9a71-9fc1dccb6b80"
+   /dev/loop4: TYPE="squashfs"
+   /dev/xvdf1: UUID="jz9PTV-FseX-4Yuo-dfOf-SB0I-Y66K-4zrU3f" TYPE="LVM2_member" PARTLABEL="Linux filesystem"                  PARTUUID="10f98fd9-d905-493b-816c-e73bb3226650"
+   /dev/loop2: TYPE="squashfs"
+   /dev/loop0: TYPE="squashfs"
+   /dev/mapper/app--data-apps: UUID="65ffda4e-9bd7-45d0-9a9d-d861634c2191" BLOCK_SIZE="4096" TYPE="ext4"
+   /dev/xvdg1: UUID="N35Wd6-nzkr-cwd8-ob1T-gKBk-XPD1-GTjTX8" TYPE="LVM2_member" PARTLABEL="Linux filesystem"                  PARTUUID="1c365be1-acdb-4682-bed5-e28be4e84119"
+   /dev/loop3: TYPE="squashfs"
+   /dev/xvda14: PARTUUID="95e637f7-7ab6-48b4-ac14-66a7518b75ba"
+   
+Copy the Identify the UUID of the mount volumes, 
+
+Update fstab and enter the UUID
+
+sudo vim /etc/fstab
+
+![fstab](https://user-images.githubusercontent.com/101070055/232242317-12fd7068-7860-4042-af9f-40f0cb18c746.png)
+
+save and exit
+
+Reload and test configuration
+
+    sudo mount -a
+    sudo systemctl daemon-reload
+
+Here Confirmed my configuration
+
+![fstab](https://user-images.githubusercontent.com/101070055/232242548-567ad540-a432-4f6b-8b19-149b7fa56dd0.png)
+
+# Update Server, Install Apache2 Server and its dependencies and Wordpress
+
+    sudo apt update -y 
+    sudo apt -y install wget apache2 php php-mysqlnd php-fpm php-json
+
+Start Apache2
+
+    sudo systemctl enable apache2
+    sudo systemctl start apache2
+
+Install PHP and its dependencies
+
+     sudo yum install php php-opcache php-gd php-curl php-mysqlnd
+
+Download wordpress and copy wordpress to var/www/html
+
+      mkdir wordpress
+      cd   wordpress
+      sudo wget http://wordpress.org/latest.tar.gz
+      sudo tar xzvf latest.tar.gz
+      sudo rm -rf latest.tar.gz
+      cp wordpress/wp-config-sample.php wordpress/wp-config.php
+      cp -R wordpress /var/www/html/
+
