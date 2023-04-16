@@ -133,7 +133,7 @@ Verify If my VG has been created successfully by running
 
 I will create 2 logical volumes with lvcreate for apps to store website data and while  apps-log will be sued to store data for logs.
 
-      sudo lvcreate -n apps -L 14G app-data
+      sudo lvcreate -n apps -L 14G app-data       >> app-data=vg name (volume group) apps=lv name (logical-volume)
       sudo lvcreate -n apps-log -L 14G app-data
 
 verify if logical volume have been created
@@ -228,7 +228,7 @@ Here Confirmed my configuration
     sudo apt update -y 
     sudo apt -y install wget apache2 php php-mysqlnd php-fpm php-json
     or.
-    sudo apt install php php-mysql php-gd php-cli php-common -y
+    sudo apt install php php-mysql php-gd php-cli php-xml php-common -y
 
 Start Apache2
 
@@ -246,7 +246,48 @@ Download wordpress and copy wordpress to var/www/html
       sudo rm -rf latest.tar.gz
       sudo cp -R wordpress/* /var/www/html/
       sudo chown -R www-data:www-data /var/www/html
+      sudo mv /var/www/html/index.html  /var/www/html/index.apache-html
       
 # Configure Database:
 
 I will repeat same volume configuration and mount it on mysql default data directory /var/lib/mysql
+
+![db-data](https://user-images.githubusercontent.com/101070055/232255607-8d2eac72-e892-4da7-8dad-9d6eb16f76dd.png)
+
+Login and configure the db for access
+
+       sudo mysql
+       ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'admin';
+       CREATE DATABASE wordpress;
+       CREATE USER 'global'@'web-server-private-ip>' IDENTIFIED BY 'global12345';
+       GRANT ALL ON wordpress.* TO 'global'@'web-server-private-ip';
+       FLUSH PRIVILEGES;
+       SHOW DATABASES;
+       exit
+
+On my AWS security group attached to the database server, i allowed inbound traffic on port 3306 from web-server security group. therefore the communication will go through private IP
+
+# Connect to mysql database from wordpress
+
+install mysql-client
+
+     sudo apt install mysql-client
+
+I have tested it locally from web-server terminal to database, the connection was establised successfully
+
+I will use My webserver public IP to connect from web client (chrome)
+
+![press-1](https://user-images.githubusercontent.com/101070055/232256457-fdb9a6b7-ad4b-43a8-8faf-57a8d4a6c6fd.png)
+
+click on the down button "lets go" to enter db information
+
+![connect-wp](https://user-images.githubusercontent.com/101070055/232258436-44e882df-a1d8-41dd-9d56-f4f9340a9c04.png)
+
+Boom !!!!
+
+![succ-db](https://user-images.githubusercontent.com/101070055/232258458-cdf637db-cc17-4d18-8bf2-6a1f23ab8fdb.png)
+
+
+    Am Available via email for any issues
+    Mmadubugwuchibuife@gmail.com
+    >>>>jmcglobal-tech>>>>>> Cloud Architect/DevOps Specialist ..
