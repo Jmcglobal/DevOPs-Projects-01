@@ -49,3 +49,14 @@ The application controller is a Kubernetes controller which continuously monitor
 
       https://github.com/Jmcglobal/Kubernetes-MyProject/tree/master/EKS
 
+## Here i will be using minikube cluster
+
+![mini-kub-cluster](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/7a6d0397-86c7-45fa-b97a-83f1ce20ffcb)
+
+#### Install ArgoCD inside the cluster
+
+- Create a namespace "argocd"
+
+        kubectl create namespace argocd
+        kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+        
