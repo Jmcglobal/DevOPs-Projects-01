@@ -110,8 +110,44 @@ Access the argocd server, using cluster node public IP or loadbalancer, if on mi
 ### ADD/CONNECT REPOSITORY
 
             Click settings , select repository
-            Select connect via HTTPS
-            If your repo is private , then enter password and username
+            Select connect repo
+            Choose via HTTPS
+            
+           UNDER CONNECT REPO USING HTTPS
+           select git as type
+            under project select default
+            enter repository url (https://github.com/Jmcglobal/argocd-yamls)
+            If your project git repo is private , then enter password and username of user github account
             Then click connect
 
+![connect-repo](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/45df66bf-c311-4ecc-ac46-b0004c246551)
 
+![connect-repo-successfull](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/43029be6-c883-453e-b096-3d8cc10e5c77)
+
+#### ADD APPLICATION
+
+       Select create application
+
+- UNDER GENERAL
+
+            Enter application name (in small letters)
+            select default under project
+            under sync, select manual or automatic
+
+![general](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/d0bab156-c199-4e90-b2bb-9415f9d82271)
+
+- Configure Source
+
+            select the repository url 
+            Enter path, that contains the yaml file
+
+![source](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/732de0d2-5c2b-4b54-8e11-a1d1fbf46ca4)
+
+- Configure Destination
+
+      Select default cluster
+      Enter default as namespace
+      
+![destination](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/2ae1a8c7-27aa-4af5-8aa8-804ab44c8624)
+
+Click create Button at the top left
