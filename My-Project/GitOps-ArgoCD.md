@@ -4,6 +4,7 @@ Argocd is a declarative continuos deployment tools, in other words ArgoCD is a d
 
 ArgoCD is implemented as a kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo)
 . It maintains sync between GIT and kubernetes, whatever manifest on git is pulled and deployed on kubernetes
+
 #### Argocd Architecture
 
 ![Architecture-cd](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/0dada98e-8ef7-4d05-9989-e24d0c9f291d)
@@ -59,4 +60,58 @@ The application controller is a Kubernetes controller which continuously monitor
 
         kubectl create namespace argocd
         kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-        
+       
+- Get all resources on argocd namespace
+
+        kubectl get all -n argocd
+
+![argocd-resources](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/68e2b637-6b5b-433d-88a8-2c7ed7fcb788)
+
+This shows that the installation of argocd is successfull, all the necessary services, pod and servers as well as replicaset is created
+
+### ACCESS ARGOCD WEB UI
+
+- Edit argocd-server service type to NodePort, Loadbalancer or use Ingress
+
+            kubectl edit svc argocd-server -n argocd
+            
+- Scroll down Change service type to NodePort or LoadBalancer (use appropraite command to save and exit)
+
+- Use kubectl get svc argocd-server -n argocd >> to see port number 
+
+![argocd-port-number](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/cf190d5d-e8ba-4e3f-9788-cccfe3c7e573)
+
+- From above output, we have two different port number to access the argocd-server web ui ( 30264 mapped to port 80 and 30859 mapped to port 443) 
+
+Access the argocd server, using cluster node public IP or loadbalancer, if on minikube cluster user minikube ip
+
+      http://<minikubeip or node public ip>:30264
+
+![argocd-home-page](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/0da53f75-c29b-48cc-90b5-825a2033ad20)
+
+- Username = admin
+
+- Password
+
+      kubectl get secret argocd-initial-admin-secret -n argocd -o yaml | grep password
+      
+- Copy the encrypted 
+
+      echo <paste-th-password> | base64 -d
+      
+- Copy the password and enter it as password
+
+![argocd-page](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/6bac791c-0025-4e80-b8e7-a88b6d3faa92)
+
+#### Argocd uses dedicated git repo, where the declartive manifest files are hosted
+
+- https://github.com/Jmcglobal/argocd-yamls
+
+### ADD/CONNECT REPOSITORY
+
+            Click settings , select repository
+            Select connect via HTTPS
+            If your repo is private , then enter password and username
+            Then click connect
+
+
