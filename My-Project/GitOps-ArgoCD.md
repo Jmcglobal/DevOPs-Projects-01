@@ -151,3 +151,131 @@ Access the argocd server, using cluster node public IP or loadbalancer, if on mi
 ![destination](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/2ae1a8c7-27aa-4af5-8aa8-804ab44c8624)
 
 Click create Button at the top left
+
+![application-created](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/b8008b1a-ae40-4800-aa39-413454fe9f55)
+
+Picture above shows the application is created, but it is out of sync, because i selected manual sync when configuring the application.
+
+- Select/Click on the application to see the full overview of resources it will be deployed once it is sync
+
+      Click App details and App diff for more detailed information
+
+![select-application](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/13796766-5af9-4e12-911f-092ac7522372)
+
+- Click on sync to deploy the resources to kubernetes cluster
+
+![sync-resource](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/3055f0fb-3c03-4132-b875-1a6a5c96483e)
+
+- Click on synchronize
+
+![synchronized](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/36e26678-4e72-4db8-b3ad-e8a071404eee)
+
+Above shows the resources is successfully synchronized
+
+kubectl get all  >> this will display nginx apps been deployed, the replicas, service, pods, deployment.
+
+Any changes that is made to the manifest file, or kubectl resources using kubectl, argocd will dictate and it will point it as "OutOfSynC"
+
+### TO ENABLE AUTO SYNC
+
+- Click on APP Details
+
+      Scroll down and enable auto sync
+      
+- On sync policy, enable Prune resource and Self heal (prune resource will delete extra resource)
+
+- Any changes made to the manifest file will be automatically deployed to the kubernetes cluster
+
+- Delete the application by clicking on delete
+
+### ARGOCD USING HELM CHART
+
+- Click on settings, select repositories and click connect repo
+ 
+      Here i will be adding grafana charts
+      https://grafana.github.io/helm-charts 
+
+- connect method via HTTPS
+
+      Select type helm
+      Enter name
+      select  Project
+      Enter repository URL  ( https://grafana.github.io/helm-charts )
+
+      Click connect
+      
+![grafana-repo](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/71271555-352d-4559-9df7-b7c5f735663e)
+
+### CREATE APPLICATION
+
+- UNDER GENERAL
+
+      Enter preferred application name
+      Project name = default 
+      Sync policy = ( manual / automatic )
+
+![general-application](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/dd5cb6e9-0cd4-4aef-b146-1335f61ced57)
+
+- Configure Source and Destination
+
+      Select repository URL
+      Select chart from list of available chart  (choose grafana)
+      Select version of grafana you want
+
+      Select kubernets cluster url
+      Enter default namespace or preferred namespace
+
+      Then select create
+
+![source-destina-appl](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/7fce0a4a-479c-4c5d-86ad-d744c708bbc6)
+
+#### Helm Application is created
+
+![helm-app-created](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/616597bb-e6f7-495e-b730-0e1f0ada0225)
+
+- Click on it, to see all the objects that will be deployed
+
+![grafana-view-app](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/809b0b92-3b20-4466-b404-7902ee8a2309)
+
+- Click on sync, then select synchronize to deploy to the kubernetes cluster
+
+![synk-okay](https://github.com/Jmcglobal/DevOPs-Projects-01/assets/101070055/1914de53-63df-4e1c-a00e-acb2bb9b0b81)
+
+- To Edit, click on app details, select parameters, then click on edit
+
+      Scroll down and change service.type port to NodePort, 
+      if there is any changes to make, also include it then save
+      
+- Then sync it again, it will be updated on kubernetes cluster
+
+
+### ARCGOCD CLI USE
+
+- Download argocd binary
+	
+      pacman -S argocd
+      curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+      sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+      rm argocd-linux-amd64
+
+- Before running a command against the server, use cli command to login
+
+
+      argocd login <nodeport-ip:37673> --insecure --password jmcglobal
+      Then enter username ( with this command, --insecure “skip server auth certificate”)
+      argocd login 192.168.49.2:32465 --password jmcglobal --username admin --insecure
+
+      argocd cluster list 	>> List out default cluster cluster
+      argocd proj list		>> list project
+      argocd repo list 		>> List repositories
+      argocd app list 		>> list applications
+      argocd logout 192.168.49.2:32465		>> logout from server
+      argocd proj create jmcglobal 		>> create project
+      argocd account get-user-info 		>> see user info
+      argocd account update-password 	>> Change password
+      argocd app create  | less 		>> Follow guides to create apps
+      argocd app get <app-name>		>> get and see app status/synced 
+      argocd app resources <app-name> 	>> see all resources contain in the app
+      argocd app delete grafana	>> Delete app grafana
+      
+- Reach out to: mmadubugwuchibuife@gmail.com         >>>>>>>>> If you have any enquiry of having some difficulty
